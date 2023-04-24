@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Projekt_mas_s21588.iml" filepath="$PROJECT_DIR$/Projekt_mas_s21588.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/javafx-sdk-19.0.2.1/lib/lib.iml" filepath="$PROJECT_DIR$/lib/javafx-sdk-19.0.2.1/lib/lib.iml" />
+    </modules>
+  </component>
+</project>

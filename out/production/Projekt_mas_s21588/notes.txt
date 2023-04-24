@@ -1,0 +1,309 @@
+ public void profile(GridPane ProfilPage,BorderPane borderPane){
+        {
+            final String blueButtonStyle = "-fx-background-color: #21D190  ";
+            final String blueHovered = "-fx-background-color: #1cad78 ";
+
+            final String greenButtonStyle = " -fx-background-color: #01BAEF";
+            final String greenHovered = " -fx-background-color: #049bc7 ";
+            Session session = MainSessionFactory.openSession();
+            session.beginTransaction();
+            if(loggedClient!=null)
+            {
+
+                HBox profilDetails = new HBox();
+                profilDetails.setAlignment(Pos.CENTER_LEFT);
+                profilDetails.setSpacing(10);
+                VBox.setMargin(profilDetails, new Insets(20));
+
+                HBox profilTitle = new HBox();
+                profilTitle.setSpacing(10);
+                VBox.setMargin(profilTitle, new Insets(20));
+
+                List<Karnet> carnets = new ArrayList<>();
+                ArrayList<Label> CarnetLabels = new ArrayList<>();
+                Label labelProfil = new Label("Dane profilu:");
+                labelProfil.setTextFill(Color.web("#e8edeb"));
+                labelProfil.setStyle("-fx-font-size: 18px;");
+                String accountDetails="";
+                accountDetails+="Imie:     "+loggedClient.getName()+"\n";
+                accountDetails+="Nazwisko: "+loggedClient.getLastName()+"\n";
+                accountDetails+="Pesel:    "+loggedClient.getPesel()+"\n";
+                accountDetails+="email:    "+loggedClient.getEmail()+"\n";
+                Button label = new Button(accountDetails);
+                label.setPrefSize(220, 100);
+                label.setStyle(greenHovered);
+                profilTitle.getChildren().addAll(labelProfil);
+                profilDetails.getChildren().addAll(label);
+
+                Label labelKarnet = new Label("Karnety:");
+                labelKarnet.setPrefWidth(250);
+                labelKarnet.setTextFill(Color.web("#e8edeb"));
+                ProfilPage.add(labelKarnet,2,0);
+                labelKarnet.setStyle("-fx-font-size: 18px;");
+
+                Label gymLabel = new Label("Siłownie:");
+                gymLabel.setTextFill(Color.web("#e8edeb"));
+                gymLabel.setStyle("-fx-font-size: 18px;");
+                gymLabel.setPrefWidth(250);
+
+                Label trainerLabel = new Label("Trenerzy:");
+                trainerLabel.setTextFill(Color.web("#e8edeb"));
+                trainerLabel.setStyle("-fx-font-size: 18px;");
+                trainerLabel.setPrefWidth(250);
+                Label trainingLabel = new Label("Umówione treningi:");
+                trainingLabel.setTextFill(Color.web("#e8edeb"));
+                trainingLabel.setStyle("-fx-font-size: 18px;");
+                trainingLabel.setPrefWidth(250);
+                Label space = new Label("");
+                space.setPrefWidth(50);
+                ProfilPage.add(space,1,0);
+
+                ProfilPage.add(profilTitle,0,0);
+                ProfilPage.add(profilDetails,0,1);
+                ProfilPage.add(gymLabel,4,0);
+                ProfilPage.add(trainerLabel,6,0);
+                ProfilPage.add(trainingLabel,8,0);
+
+                VBox karnetsDetails = new VBox();
+                karnetsDetails.setAlignment(Pos.CENTER_LEFT);
+                karnetsDetails.setSpacing(40);
+
+                VBox gymDetails = new VBox();
+                gymDetails.setAlignment(Pos.CENTER_LEFT);
+                gymDetails.setSpacing(40);
+
+                VBox trainerDetails = new VBox();
+                trainerDetails.setAlignment(Pos.CENTER_LEFT);
+                trainerDetails.setSpacing(40);
+
+                //Training button
+                Button training = new Button("Umów się na trening");
+                training.setPrefSize(100, 20);
+                training.setStyle(greenHovered);
+                int carnetNb=1;
+                *//*System.out.println("lalalala");*//*
+                for (var carnet : loggedClient.getKarnets())
+                {
+                    String carnetDetailsText="";
+                    carnetDetailsText+="Opłacone:      "+carnet.getPaid()+"\n";
+                    carnetDetailsText+="Koszt msc:     "+carnet.getMonthlyCost()+"\n";
+                    carnetDetailsText+="Od kiedy:      "+carnet.getSinceWhen()+"\n";
+                    carnetDetailsText+="Do kiedy:      "+carnet.getSinceTo()+"\n";
+                    Button button = new Button(carnetDetailsText);
+                    carnets.add(carnet);
+                    button.setPrefSize(220, 100);
+                    button.setStyle(blueButtonStyle);
+                    karnetsDetails.getChildren().addAll(button);
+                    carnetNb++;
+                    button.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent actionEvent) {
+                            gymDetails.getChildren().removeAll();
+                            gymDetails.getChildren().clear();
+                            ProfilPage.getChildren().remove(gymDetails);
+                            trainerDetails.getChildren().removeAll();
+                            trainerDetails.getChildren().clear();
+                            ProfilPage.getChildren().remove(trainerDetails);
+                            button.setStyle(blueButtonStyle);
+                            training.setStyle(greenHovered);
+                            setTrener(null);
+                            int rowNb=1;
+                            for(Silownia gym : carnet.getCarnetsGymKarnets())
+                            {
+                                String title="";
+                                title+="Nazwa: "+gym.getNazwa()+"\n";
+                                title+="Adres: "+gym.getAdres()+"\n";
+                                title+="Kod:   "+gym.getKodPocztowy()+"\n";
+                                Button btn = new Button(title);
+                                btn.setPrefSize(220, 100);
+                                gymDetails.getChildren().addAll(btn);
+                                btn.setStyle(blueHovered);
+                                //
+
+                                btn.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent actionEvent) {
+                                        trainerDetails.getChildren().removeAll();
+                                        trainerDetails.getChildren().clear();
+                                        ProfilPage.getChildren().remove(trainerDetails);
+                                        training.setStyle(greenHovered);
+                                        setTrener(null);
+                                        btn.setStyle(blueButtonStyle);
+                                        for(Trener trainer : gym.getTrainers())
+                                        {
+                                            String trainerDetailsText="";
+                                            trainerDetailsText+="Imie:      "+trainer.getName()+"\n";
+                                            trainerDetailsText+="Nazwisko:  "+trainer.getLastName()+"\n";
+                                            trainerDetailsText+="Pesel:     "+trainer.getPesel()+"\n";
+                                            trainerDetailsText+="Pensja:    "+trainer.getPensja()+"\n";
+                                            trainerDetailsText+="Koszt:     "+trainer.getCostOfTraining()+"\n";
+                                            Button btnTrainer = new Button(trainerDetailsText);
+                                            btnTrainer.setPrefSize(220, 100);
+                                            btnTrainer.setStyle(blueHovered);
+                                            trainerDetails.getChildren().addAll(btnTrainer);
+
+                                            btnTrainer.setOnAction(new EventHandler<ActionEvent>() {
+                                                @Override
+                                                public void handle(ActionEvent actionEvent) {
+                                                    setTrener(trainer);
+                                                    training.setStyle(blueHovered);
+                                                }
+                                            });
+                                        }
+                                        ProfilPage.add(trainerDetails,6,1);
+                                    }
+                                });
+                                rowNb++;
+
+                            }
+                            ProfilPage.add(gymDetails,4,1);
+                        }
+                    });
+
+
+
+                    *//**//*
+                }
+
+                ProfilPage.add(karnetsDetails,2,1);
+                Label space2 = new Label("");
+                space2.setPrefWidth(10);
+                ProfilPage.add(space2,3,0);
+
+                Label space3 = new Label("");
+                space3.setPrefWidth(10);
+                ProfilPage.add(space3,5,0);
+
+                Label space4 = new Label("");
+                space4.setPrefWidth(10);
+                ProfilPage.add(space4,7,0);
+
+                session.getTransaction().commit();
+                session.close();
+                //ProfilPage
+
+                //buttons
+
+                training.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        if((getTrener()!=null) && (getLoggedClient()!=null))
+                        {
+                            Session session = MainSessionFactory.openSession();
+                            session.beginTransaction();
+                            trainerDetails.getChildren().removeAll(trainerDetails);
+                            trainerDetails.getChildren().clear();
+                            gymDetails.getChildren().removeAll();
+                            gymDetails.getChildren().clear();
+                            ProfilPage.getChildren().remove(gymDetails);
+                            TreningPersonalny treningPersonalny = new TreningPersonalny(getTrener().getCostOfTraining(),LocalDateTime.now().plusDays(7));
+                            getTrener().addTraining(treningPersonalny);
+                            getLoggedClient().addTraining(treningPersonalny);
+                            String trainingDetailsText="";
+                            trainingDetailsText+="Kiedy:   "+treningPersonalny.getDate()+"\n";
+                            trainingDetailsText+="Koszt:   "+treningPersonalny.getCost()+"\n";
+                            Button labelOfTrainingText = new Button(trainingDetailsText);
+                            labelOfTrainingText.setPrefWidth(220);
+                            labelOfTrainingText.setStyle(greenButtonStyle);
+                            *//*System.out.println(getLoggedClient().getPersonalTrainingList().size());*//*
+                            int howMany=getLoggedClient().getPersonalTrainingList().size();
+                            ProfilPage.add(labelOfTrainingText,8,howMany);
+                            training.setStyle(greenHovered);
+                            setTrener(null);
+                            session.save(treningPersonalny);
+                            session.getTransaction().commit();
+                            session.close();
+                        }else{
+                            System.out.println("Wybierz karnet oraz siłownie oraz trenera");
+                        }
+                    }
+                });
+
+                //buy carnet button
+                Button buyCarnet = new Button("Kup karnet");
+                buyCarnet.setPrefSize(100, 20);
+                buyCarnet.setStyle(blueButtonStyle);
+                buyCarnet.setOnMouseEntered(e -> buyCarnet.setStyle(blueHovered));
+                buyCarnet.setOnMouseExited(e -> buyCarnet.setStyle(blueButtonStyle));
+                *//*backkButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        ProfilPage.getChildren().removeAll(gymDetails);
+                        borderPane.setCenter(loginPage);
+                        borderPane.setBottom(loginHBox);
+                        logOut();
+                    }
+                });*//*
+                //back to login button
+                Button backkButton = new Button("Wyloguj się");
+                backkButton.setPrefSize(100, 20);
+                backkButton.setOnMouseEntered(e -> backkButton.setStyle(blueHovered));
+                backkButton.setOnMouseExited(e -> backkButton.setStyle(blueButtonStyle));
+                backkButton.setStyle(blueButtonStyle);
+                backkButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        ProfilPage.getChildren().removeAll(gymDetails);
+                        profilHBox.getChildren().removeAll();
+                        borderPane.setCenter(loginPage);
+                        borderPane.setBottom(loginHBox);
+                        profilHBox.getChildren().clear();
+                        logOut();
+                    }
+                });
+
+
+                profilHBox.getChildren().addAll(backkButton, buyCarnet, training);
+                //configuration
+                ProfilPage.setVgap(20);
+                ProfilPage.setAlignment(Pos.CENTER);
+                profilHBox.setPadding(new Insets(30, 30, 30, 30));
+                profilHBox.setSpacing(80);
+                profilHBox.setAlignment(Pos.CENTER);
+            }
+            else{
+                System.out.println("nie ma takiego użytkownika");
+            }
+
+        }
+    }
+///////////////////////////////////////////////////////
+ /*for(var chara : getCharacters())
+        {
+            if(chara!=null){
+                myListViewChar.add(chara.toString());
+            }
+        }
+        BorderPane root = new BorderPane();
+        Label l = new Label();
+        Button btn = new Button();
+        btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String finale="";
+                for(var book : myListViewBooks)
+                {
+                    finale+=book+"\n";
+                }
+                l.setText(finale);
+            }
+        });
+        btn.setText("get books");
+        GridPane root2= new GridPane();
+        Button btn2 = new Button();
+        btn2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String finale="";
+                for(var book : myListViewChar)
+                {
+                    finale+=book+"\n";
+                }
+                l.setText(finale);
+            }
+        });
+        btn2.setText("get Characters");
+        root2.add(btn,2,2);
+        root2.add(btn2,2,3);
+        root2.add(l,2,4);
+        root.setCenter(root2);*/
